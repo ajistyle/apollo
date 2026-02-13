@@ -1,0 +1,28 @@
+# 可选：对外暴露 Portal 的 Ingress，按集群 Ingress Controller 类型调整
+# 若使用 Nginx Ingress，通常无需改 annotation；若使用其他控制器请查阅文档
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: apollo-portal
+  namespace: gw-middleware
+  labels:
+    app: apollo-portal
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   cert-manager.io/cluster-issuer: letsencrypt-prod  # 若需 HTTPS
+spec:
+  rules:
+    - host: apollo.example.com   # 请改为实际域名或删除 host 使用默认
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: apollo-portal
+                port:
+                  number: 8070
+  # tls:
+  #   - hosts:
+  #       - apollo.example.com
+  #     secretName: apollo-portal-tls

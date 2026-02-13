@@ -1,0 +1,10 @@
+# 达梦数据库配置（PortalDB）。生产环境建议用环境变量覆盖密码。
+spring:
+  datasource:
+    driver-class-name: dm.jdbc.driver.DmDriver
+    url: jdbc:dm://dbip:5236?SCHEMA=APOLLOPORTALDB
+    username: SYSDBA
+    password: password
+  jpa:
+    database-platform: com.ctrip.framework.apollo.common.jpa.DamengDialect
+

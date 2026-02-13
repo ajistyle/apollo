@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apollo-portal
+  namespace: gw-middleware
+  labels:
+    app: apollo-portal
+spec:
+  type: NodePort
+  ports:
+    - port: 8070
+      targetPort: 8070
+      nodePort: 30001
+      name: http
+  selector:
+    app: apollo-portal

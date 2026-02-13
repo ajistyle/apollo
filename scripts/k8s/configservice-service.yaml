@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apollo-configservice
+  namespace: gw-middleware
+  labels:
+    app: apollo-configservice
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    app: apollo-configservice

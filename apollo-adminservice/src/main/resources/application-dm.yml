@@ -1,0 +1,10 @@
+# 达梦数据库配置（ConfigDB）。生产环境建议用环境变量覆盖密码。
+spring:
+  datasource:
+    driver-class-name: dm.jdbc.driver.DmDriver
+    url: jdbc:dm://10.54.1.76:5236?SCHEMA=APOLLOCONFIGDB
+    username: SYSDBA
+    password: DMDBA_hust4400
+  jpa:
+    database-platform: com.ctrip.framework.apollo.common.jpa.DamengDialect
+

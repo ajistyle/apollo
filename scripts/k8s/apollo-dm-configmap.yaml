@@ -1,0 +1,19 @@
+# 达梦数据库连接信息（非敏感部分），后期可直接修改本 ConfigMap 或通过 kubectl edit 调整
+# ConfigService/AdminService 使用 CONFIG_DB_URL，Portal 使用 PORTAL_DB_URL
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apollo-dm-config
+  namespace: gw-middleware
+  labels:
+    app.kubernetes.io/name: apollo
+data:
+  # ConfigDB 连接 URL（可修改主机、端口、SCHEMA）
+  CONFIG_DB_URL: "jdbc:dm://DMDBIP:5236?SCHEMA=APOLLOCONFIGDB"
+  # PortalDB 连接 URL
+  PORTAL_DB_URL: "jdbc:dm://DMDBIP:5236?SCHEMA=APOLLOPORTALDB"
+  # Apollo 激活的 profile：Config/Admin 为 github,dm；Portal 为 github,auth,dm
+  APOLLO_PROFILE_CONFIG: "github,dm"
+  APOLLO_PROFILE_PORTAL: "github,auth,dm"
+  # Portal 使用的 meta 地址（指向 ConfigService，集群内用 Service 名）
+  DEV_META: "http://apollo-configservice:8080"

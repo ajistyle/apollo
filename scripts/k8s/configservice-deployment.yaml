@@ -1,0 +1,82 @@
+# Apollo ConfigService Deployment，依赖达梦 ConfigDB
+# 镜像需先构建并推送到集群可访问的仓库，见 README-K8S-DM.md
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apollo-configservice
+  namespace: gw-middleware
+  labels:
+    app: apollo-configservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apollo-configservice
+  template:
+    metadata:
+      labels:
+        app: apollo-configservice
+    spec:
+      imagePullSecrets:
+        - name: harborlogin
+      containers:
+        - name: apollo-configservice
+          image: harborURL/apollo-configservice:2.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: APOLLO_RUN_MODE
+              value: "Docker"
+            - name: SERVER_PORT
+              value: "8080"
+            - name: LOG_DIR
+              value: "/opt/logs/apollo-configservice"
+            - name: APOLLO_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: apollo-dm-config
+                  key: APOLLO_PROFILE_CONFIG
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: apollo-dm-config
+                  key: CONFIG_DB_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: apollo-dm-secret
+                  key: DB_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: apollo-dm-secret
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: logs
+              mountPath: /opt/logs
+      volumes:
+        - name: logs
+          emptyDir: {}
